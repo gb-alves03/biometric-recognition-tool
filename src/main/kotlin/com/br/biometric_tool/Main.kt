@@ -1,44 +1,36 @@
 package com.br.biometric_tool
 
-import com.br.biometric_tool.infra.exceptions.ValueNotAttributedException
+import com.br.biometric_tool.impl.SiftAndFlannImpl
 import org.opencv.core.Core
-import org.opencv.core.Mat
-import org.opencv.core.MatOfKeyPoint
-import org.opencv.features2d.SIFT
-import org.opencv.imgcodecs.Imgcodecs
+
 import java.io.File
 
+fun main(args: Array<String>) {
+    System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
 
-class Main {
+    val siftAndFlann = SiftAndFlannImpl()
 
-    fun main() {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+    val refImagePath = "src/main/resources/SOCOFing/Altered/1__M_Left_index_finger_CR.BMP"
 
-        val refImagePath = "src/main/resources/SOCOFing/Altered/1__M_Left_index_finger_CR.BMP"
-        val refImage = Imgcodecs.imread(refImagePath)
+    val authImagePaths =  File("src/main/resources/SOCOFing/Real").listFiles()
+        ?.filter { it.isFile && isImageFile(it) }
+        ?.map { it.absolutePath }
+        ?.take(1000)
+        ?: listOf()
 
-        if (refImage.empty()) {
-            throw ValueNotAttributedException("Error to record the reference image")
+    if (authImagePaths.isNotEmpty()) {
+        val results = siftAndFlann.authenticate(refImagePath, authImagePaths)
+
+        results.forEach {(path, authenticated) ->
+            println("Image: $path - Authenticated: $authenticated")
         }
-
-        val authImagePaths =  File("src/main/resources/SOCOFing/Real").listFiles()?.map { it.path }?.take(1000) ?: listOf()
-        if (authImagePaths.isEmpty()) {
-            throw ValueNotAttributedException("Authentication images not found")
-        }
-
-        val sift = SIFT.create()
-
-        val keypointsRef = MatOfKeyPoint()
-        val descriptorsAuth = Mat()
-        sift.detectAndCompute(refImage, Mat(), keypointsRef, descriptorsAuth)
-
-        if (descriptorsAuth.empty()) {
-            throw ValueNotAttributedException("It was not possible to extract descriptors from the reference image")
-        }
-
-
-        // Inicializar a parte do FLANN
-
-
+    } else {
+        println("Authentication images not found")
     }
+}
+
+fun isImageFile(file: File): Boolean {
+    val imageExtensions = listOf("jpg", "jpeg", "png", "bmp")
+
+    return imageExtensions.any { file.name.endsWith(it, ignoreCase = true) }
 }
