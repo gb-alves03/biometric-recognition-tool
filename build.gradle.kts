@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation(files("libs/opencv-480.jar"))
+    implementation(files("C:/Program Files/opencv/build/java/opencv-480.jar"))
     testImplementation(kotlin("test"))
 }
 
