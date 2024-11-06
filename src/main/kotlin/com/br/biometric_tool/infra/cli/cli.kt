@@ -1,5 +1,7 @@
 package com.br.biometric_tool.infra.cli
 
+import com.br.biometric_tool.domain.entity.Account
+import com.br.biometric_tool.domain.vo.Name
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.UUID

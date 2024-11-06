@@ -1,5 +1,6 @@
 package com.br.biometric_tool.domain.entity
 
+import com.br.biometric_tool.domain.vo.Name
 import java.util.UUID
 
 class Account(
