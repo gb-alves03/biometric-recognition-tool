@@ -1,6 +1,6 @@
 package com.br.biometric_tool.infra.exceptions
 
-class ValueNotAttributedException : RuntimeException {
+class ImageNotProcessedException : RuntimeException {
 
     constructor(message : String) : super(message)
 }
