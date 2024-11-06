@@ -37,7 +37,7 @@ class Password private constructor(private val password: String) {
         return this.password == hashPassword(password)
     }
 
-    override fun toString(): String {
+    fun getPassword(): String {
         return this.password
     }
 }

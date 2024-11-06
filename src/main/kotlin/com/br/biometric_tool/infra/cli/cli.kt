@@ -1,10 +1,8 @@
 package com.br.biometric_tool.infra.cli
 
 import com.br.biometric_tool.domain.entity.Account
-import com.br.biometric_tool.domain.vo.Name
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.UUID
 
 fun main() {
     val reader = BufferedReader(InputStreamReader(System.`in`))
@@ -45,13 +43,12 @@ fun main() {
             }
             "biometricsUrl" -> {
                 input["biometricsUrl"] = command
-                // Criação do objeto Account com base nos dados fornecidos
                 val account = Account(
-                    accountId = UUID.randomUUID().toString(),
-                    name = Name(input["firstName"]!!, input["lastName"]!!),
-                    email = Email(input["email"]!!),
-                    password = Password.create(input["password"]!!),
-                    biometricsUrl = if (input["biometricsUrl"].isNullOrEmpty()) null else input["biometricsUrl"]
+                    firstName = input["firstName"]!!,
+                    lastName = input["lastName"]!!,
+                    email = input["email"]!!,
+                    password = input["password"]!!,
+                    biometricsUrl = input["biometricsUrl"]!!
                 )
 
                 println("Cadastro concluído! Detalhes da conta:")
@@ -60,7 +57,6 @@ fun main() {
                 println("Email: ${account.getEmail()}")
                 println("URL de biometria: ${account.biometricsUrl ?: "Nenhuma"}")
 
-                // Resetando para um novo cadastro
                 input.clear()
                 step = ""
                 println("\nDigite 'signup' para iniciar um novo cadastro ou 'exit' para sair")
