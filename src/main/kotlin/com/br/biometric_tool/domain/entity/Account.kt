@@ -10,6 +10,7 @@ class Account(
     lastName: String,
     email: String,
     password: String,
+    biometricsEnabled: Boolean,
     biometricsUrl: String = null.toString()
 ) {
     val accountId: String = UUID.randomUUID().toString()
@@ -23,6 +24,7 @@ class Account(
         this.name = Name(firstName, lastName)
         this.email = Email(email)
         this.password = Password.create(password)
+        this.biometricsEnabled = biometricsEnabled
         this.biometricsUrl = biometricsUrl
     }
 

@@ -9,13 +9,13 @@ fun main() {
     val input = mutableMapOf<String, String>()
     var step = ""
 
-    println("Digite 'signup' para iniciar o cadastro de uma conta ou 'exit' para sair")
+    println("Esolha uma das opções \n1. Cadastrar \n2. Logar \n3. Sair")
 
     while (true) {
         val command = reader.readLine().trim()
 
-        if (command == "signup") {
-            println("Digite o primeiro nome:")
+        if (command.lowercase() == "cadastrar") {
+            println("Digite seu primeiro nome:")
             step = "firstName"
             continue
         }
@@ -23,24 +23,31 @@ fun main() {
         when (step) {
             "firstName" -> {
                 input["firstName"] = command
-                println("Digite o sobrenome:")
+                println("Digite seu sobrenome:")
                 step = "lastName"
             }
             "lastName" -> {
                 input["lastName"] = command
-                println("Digite o email:")
+                println("Digite seu email:")
                 step = "email"
             }
             "email" -> {
                 input["email"] = command
-                println("Digite a senha:")
+                println("Digite sua senha:")
                 step = "password"
             }
             "password" -> {
                 input["password"] = command
+                println(input["password"]!!)
+                println("Deseja ativar a biometria ? (Sim ou Não)")
+                step = "biometricsEnabled"
+            }
+            "biometricsEnabled" -> {
+                input["biometricsEnabled"] = command.lowercase()
                 println("Digite a URL para biometria (ou pressione Enter para deixar vazio):")
                 step = "biometricsUrl"
             }
+
             "biometricsUrl" -> {
                 input["biometricsUrl"] = command
                 val account = Account(
@@ -48,6 +55,7 @@ fun main() {
                     lastName = input["lastName"]!!,
                     email = input["email"]!!,
                     password = input["password"]!!,
+                    biometricsEnabled = input["biometricsEnabled"] == "sim",
                     biometricsUrl = input["biometricsUrl"]!!
                 )
 
@@ -55,18 +63,25 @@ fun main() {
                 println("ID: ${account.accountId}")
                 println("Nome: ${account.getName()}")
                 println("Email: ${account.getEmail()}")
+                println("BiometricsEnabled: ${account.isBiometricsEnabled()}")
                 println("URL de biometria: ${account.biometricsUrl ?: "Nenhuma"}")
 
                 input.clear()
                 step = ""
-                println("\nDigite 'signup' para iniciar um novo cadastro ou 'exit' para sair")
+                println("\nDigite uma das opções \n" +
+                        "1. Cadastrar \n" +
+                        "2. Logar \n" +
+                        "3. Sair")
             }
             else -> {
-                if (command == "exit") {
+                if (command.lowercase() == "sair") {
                     println("Saindo da aplicação.")
                     break
                 } else {
-                    println("Comando inválido. Digite 'signup' para iniciar o cadastro ou 'exit' para sair")
+                    println("\nDigite uma das opções \n" +
+                            "1. Cadastrar \n" +
+                            "2. Logar \n" +
+                            "3. Sair")
                 }
             }
         }
