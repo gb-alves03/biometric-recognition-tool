@@ -11,13 +11,6 @@ class Name(firstName: String, lastName: String) {
         this.lastName = lastName
     }
 
-    fun getFirstName(): String {
-        return this.firstName
-    }
-
-    fun getLastName(): String {
-        return this.lastName
-    }
     fun getName(): String {
         return "$firstName $lastName"
     }

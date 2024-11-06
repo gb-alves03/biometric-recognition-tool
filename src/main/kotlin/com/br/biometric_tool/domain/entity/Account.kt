@@ -28,14 +28,6 @@ class Account(
         this.biometricsUrl = biometricsUrl
     }
 
-    fun getFirstName(): String {
-        return this.name.getFirstName()
-    }
-
-    fun getLastName(): String {
-        return this.name.getLastName()
-    }
-
     fun getName(): String {
         return this.name.getName()
     }
