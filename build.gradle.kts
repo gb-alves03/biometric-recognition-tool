@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation(files("C:/Program Files/opencv/build/java/opencv-480.jar"))
+    implementation("org.postgresql:postgresql:42.5.0")
     testImplementation(kotlin("test"))
 }
 
