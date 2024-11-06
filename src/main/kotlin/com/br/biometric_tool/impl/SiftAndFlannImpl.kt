@@ -43,29 +43,21 @@ class SiftAndFlannImpl {
             .filter { it.distance < threshold }
     }
 
-    fun authenticate(refImagePath: String, authImagePaths: List<String>, matchThreshold: Int = 10): Map<String, Boolean> {
+    fun authenticate(refImagePath: String, authImagePath: String, matchThreshold: Int = 10): Boolean {
         val refImage = loadImage((refImagePath))
         val (_, descriptorsRef) = extractDescriptors(refImage)
 
-        val results = mutableMapOf<String, Boolean>()
-
-        for (authImagePath in authImagePaths) {
-            try {
-                val authImage = loadImage(authImagePath)
-                val (_, descriptorsAuth) = extractDescriptors(authImage)
-
-                val goodMathces = matchDescriptors(descriptorsRef, descriptorsAuth)
-
-                val isAuthenticated = goodMathces.size >= matchThreshold
-                results[authImagePath] = isAuthenticated
-
-                println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
-            } catch (e: ValueNotAttributedException) {
-                println("Error to process the image $authImagePath: ${e.message}")
-                results[authImagePath] = false
-            }
+        try {
+            val authImage = loadImage(authImagePath)
+            val (_, descriptorsAuth) = extractDescriptors(authImage)
+            val goodMathces = matchDescriptors(descriptorsRef, descriptorsAuth)
+            val isAuthenticated = goodMathces.size >= matchThreshold
+            println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
+            return isAuthenticated
+        } catch (e: ValueNotAttributedException) {
+            println("Error to process the image $authImagePath: ${e.message}")
+            return false
         }
-        return results
     }
 }
 
