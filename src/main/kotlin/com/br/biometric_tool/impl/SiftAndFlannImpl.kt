@@ -46,21 +46,23 @@ class SiftAndFlannImpl {
     }
 
     //Compara a authImagePath com cada umas das imagens cadastradas anteriormente pelo usuario.
-    fun authenticate(refImagePath: String, authImagePath: String, matchThreshold: Int = 10): Boolean {
-        val refImage = loadImage((refImagePath))
-        val (_, descriptorsRef) = extractDescriptors(refImage)
+    fun authenticate(refImagePath: String, authImagePath: MutableList<String>, matchThreshold: Int = 10): Boolean {
+        for(url in authImagePath) {
+            val refImage = loadImage((refImagePath))
+            val (_, descriptorsRef) = extractDescriptors(refImage)
 
-        try {
-            val authImage = loadImage(authImagePath)
-            val (_, descriptorsAuth) = extractDescriptors(authImage)
-            val goodMathces = matchDescriptors(descriptorsRef, descriptorsAuth)
-            val isAuthenticated = goodMathces.size >= matchThreshold
-            println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
-            return isAuthenticated
-        } catch (e: ImageNotProcessedException) {
-            println("Error to process the image $authImagePath: ${e.message}")
-            return false
+            try {
+                val authImage = loadImage(url)
+                val (_, descriptorsAuth) = extractDescriptors(authImage)
+                val goodMatches = matchDescriptors(descriptorsRef, descriptorsAuth)
+                //println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
+                return if(goodMatches.size >= matchThreshold) true else continue
+            } catch (e: ImageNotProcessedException) {
+                println("Error to process the image $authImagePath: ${e.message}")
+                return false
+            }
         }
+        return false
     }
 }
 

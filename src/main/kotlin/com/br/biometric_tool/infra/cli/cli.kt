@@ -55,8 +55,7 @@ fun main() {
                     lastName = input["lastName"]!!,
                     email = input["email"]!!,
                     password = input["password"]!!,
-                    biometricsEnabled = input["biometricsEnabled"] == "yes",
-                    biometricsUrl = input["biometricsUrl"]!!
+                    biometricsEnabled = input["biometricsEnabled"] == "yes"
                 )
 
                 println("Registration completed! Account details:")
@@ -64,7 +63,6 @@ fun main() {
                 println("Name: ${account.getName()}")
                 println("Email: ${account.getEmail()}")
                 println("BiometricsEnabled: ${account.isBiometricsEnabled()}")
-                println("Biometrics URL: ${account.biometricsUrl ?: "None"}")
 
                 input.clear()
                 step = ""

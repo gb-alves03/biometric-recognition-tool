@@ -10,22 +10,25 @@ class Account(
     lastName: String,
     email: String,
     password: String,
-    biometricsEnabled: Boolean,
-    biometricsUrl: String = null.toString() // Alterar para Lista (Cadastrar uma das maos do usario)
+    biometricsEnabled: Boolean
 ) {
     val accountId: String = UUID.randomUUID().toString()
     private var name: Name
     private var email: Email
     private var password: Password
     private var biometricsEnabled: Boolean = false
-    var biometricsUrl: String? = null
+    private var biometricsUrls: MutableList<String>
 
     init {
         this.name = Name(firstName, lastName)
         this.email = Email(email)
         this.password = Password.create(password)
         this.biometricsEnabled = biometricsEnabled
-        this.biometricsUrl = biometricsUrl
+        this.biometricsUrls = mutableListOf()
+    }
+
+    fun addBiometric(url: String) {
+        this.biometricsUrls.add(url)
     }
 
     fun getName(): String {
