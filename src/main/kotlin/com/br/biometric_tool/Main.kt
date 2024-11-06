@@ -12,18 +12,11 @@ fun main(args: Array<String>) {
 
     val refImagePath = "src/main/resources/SOCOFing/Altered/1__M_Left_index_finger_CR.BMP"
 
-    val authImagePaths =  File("src/main/resources/SOCOFing/Real").listFiles()
-        ?.filter { it.isFile && isImageFile(it) }
-        ?.map { it.absolutePath }
-        ?.take(1000)
-        ?: listOf()
+    val authImagePath = "src/main/resources/SOCOFing/Real/2__F_Left_index_finger.BMP"
 
-    if (authImagePaths.isNotEmpty()) {
-        val results = siftAndFlann.authenticate(refImagePath, authImagePaths)
-
-        results.forEach {(path, authenticated) ->
-            println("Image: $path - Authenticated: $authenticated")
-        }
+    if (authImagePath.isNotEmpty()) {
+        val result = siftAndFlann.authenticate(refImagePath, authImagePath)
+        println(result);
     } else {
         println("Authentication images not found")
     }

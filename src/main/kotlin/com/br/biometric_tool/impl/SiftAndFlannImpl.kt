@@ -1,6 +1,8 @@
 package com.br.biometric_tool.impl
 
-import com.br.biometric_tool.infra.exceptions.ValueNotAttributedException
+import com.br.biometric_tool.infra.exceptions.DescriptorsExtractionFailedException
+import com.br.biometric_tool.infra.exceptions.ImageNotLoadedException
+import com.br.biometric_tool.infra.exceptions.ImageNotProcessedException
 import org.opencv.core.DMatch
 import org.opencv.core.Mat
 import org.opencv.core.MatOfDMatch
@@ -16,7 +18,7 @@ class SiftAndFlannImpl {
     fun loadImage(path: String): Mat {
         val image = Imgcodecs.imread(path, Imgcodecs.IMREAD_GRAYSCALE)
         if (image.empty()) {
-            throw ValueNotAttributedException("Error to load the image: $path")
+            throw ImageNotLoadedException("Error to load the image: $path")
         }
         return image
     }
@@ -27,7 +29,7 @@ class SiftAndFlannImpl {
         sift.detectAndCompute(image, Mat(), keypoints, descriptors)
 
         if (descriptors.empty()) {
-            throw ValueNotAttributedException("Fail to extract descriptors")
+            throw DescriptorsExtractionFailedException("Fail to extract descriptors")
         }
 
         return Pair(keypoints, descriptors)
@@ -43,29 +45,22 @@ class SiftAndFlannImpl {
             .filter { it.distance < threshold }
     }
 
-    fun authenticate(refImagePath: String, authImagePaths: List<String>, matchThreshold: Int = 10): Map<String, Boolean> {
+    //Compara a authImagePath com cada umas das imagens cadastradas anteriormente pelo usuario.
+    fun authenticate(refImagePath: String, authImagePath: String, matchThreshold: Int = 10): Boolean {
         val refImage = loadImage((refImagePath))
         val (_, descriptorsRef) = extractDescriptors(refImage)
 
-        val results = mutableMapOf<String, Boolean>()
-
-        for (authImagePath in authImagePaths) {
-            try {
-                val authImage = loadImage(authImagePath)
-                val (_, descriptorsAuth) = extractDescriptors(authImage)
-
-                val goodMathces = matchDescriptors(descriptorsRef, descriptorsAuth)
-
-                val isAuthenticated = goodMathces.size >= matchThreshold
-                results[authImagePath] = isAuthenticated
-
-                println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
-            } catch (e: ValueNotAttributedException) {
-                println("Error to process the image $authImagePath: ${e.message}")
-                results[authImagePath] = false
-            }
+        try {
+            val authImage = loadImage(authImagePath)
+            val (_, descriptorsAuth) = extractDescriptors(authImage)
+            val goodMathces = matchDescriptors(descriptorsRef, descriptorsAuth)
+            val isAuthenticated = goodMathces.size >= matchThreshold
+            println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
+            return isAuthenticated
+        } catch (e: ImageNotProcessedException) {
+            println("Error to process the image $authImagePath: ${e.message}")
+            return false
         }
-        return results
     }
 }
 
