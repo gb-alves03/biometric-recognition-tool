@@ -11,7 +11,7 @@ class Account(
     email: String,
     password: String,
     biometricsEnabled: Boolean,
-    biometricsUrl: String = null.toString()
+    biometricsUrl: String = null.toString() // Alterar para Lista (Cadastrar uma das maos do usario)
 ) {
     val accountId: String = UUID.randomUUID().toString()
     private var name: Name

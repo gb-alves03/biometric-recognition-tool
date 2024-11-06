@@ -43,6 +43,7 @@ class SiftAndFlannImpl {
             .filter { it.distance < threshold }
     }
 
+    //Compara a authImagePath com cada umas das imagens cadastradas anteriormente pelo usuario.
     fun authenticate(refImagePath: String, authImagePath: String, matchThreshold: Int = 10): Boolean {
         val refImage = loadImage((refImagePath))
         val (_, descriptorsRef) = extractDescriptors(refImage)

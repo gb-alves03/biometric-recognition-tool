@@ -9,13 +9,13 @@ fun main() {
     val input = mutableMapOf<String, String>()
     var step = ""
 
-    println("Esolha uma das opções \n1. Cadastrar \n2. Logar \n3. Sair")
+    println("Enter one of the options \n1. Sign up \n2. Log in \n3. Exit")
 
     while (true) {
         val command = reader.readLine().trim()
 
-        if (command.lowercase() == "cadastrar") {
-            println("Digite seu primeiro nome:")
+        if (command.lowercase() == "sign up") {
+            println("Enter your first name:")
             step = "firstName"
             continue
         }
@@ -23,28 +23,28 @@ fun main() {
         when (step) {
             "firstName" -> {
                 input["firstName"] = command
-                println("Digite seu sobrenome:")
+                println("Enter your last name:")
                 step = "lastName"
             }
             "lastName" -> {
                 input["lastName"] = command
-                println("Digite seu email:")
+                println("Enter your email:")
                 step = "email"
             }
             "email" -> {
                 input["email"] = command
-                println("Digite sua senha:")
+                println("Enter your password:")
                 step = "password"
             }
             "password" -> {
                 input["password"] = command
                 println(input["password"]!!)
-                println("Deseja ativar a biometria ? (Sim ou Não)")
+                println("Do you want to activate biometrics? (Yes or No)")
                 step = "biometricsEnabled"
             }
             "biometricsEnabled" -> {
                 input["biometricsEnabled"] = command.lowercase()
-                println("Digite a URL para biometria (ou pressione Enter para deixar vazio):")
+                println("Type in the URL for biometrics (or press Enter to leave it empty):")
                 step = "biometricsUrl"
             }
 
@@ -55,33 +55,33 @@ fun main() {
                     lastName = input["lastName"]!!,
                     email = input["email"]!!,
                     password = input["password"]!!,
-                    biometricsEnabled = input["biometricsEnabled"] == "sim",
+                    biometricsEnabled = input["biometricsEnabled"] == "yes",
                     biometricsUrl = input["biometricsUrl"]!!
                 )
 
-                println("Cadastro concluído! Detalhes da conta:")
-                println("ID: ${account.accountId}")
-                println("Nome: ${account.getName()}")
+                println("Registration completed! Account details:")
+                println("Account ID: ${account.accountId}")
+                println("Name: ${account.getName()}")
                 println("Email: ${account.getEmail()}")
                 println("BiometricsEnabled: ${account.isBiometricsEnabled()}")
-                println("URL de biometria: ${account.biometricsUrl ?: "Nenhuma"}")
+                println("Biometrics URL: ${account.biometricsUrl ?: "None"}")
 
                 input.clear()
                 step = ""
-                println("\nDigite uma das opções \n" +
-                        "1. Cadastrar \n" +
-                        "2. Logar \n" +
-                        "3. Sair")
+                println("\nEnter one of the options \n" +
+                        "1. Sign up \n" +
+                        "2. Log in \n" +
+                        "3. Exit")
             }
             else -> {
-                if (command.lowercase() == "sair") {
-                    println("Saindo da aplicação.")
+                if (command.lowercase() == "exit") {
+                    println("Exiting the application.")
                     break
                 } else {
-                    println("\nDigite uma das opções \n" +
-                            "1. Cadastrar \n" +
-                            "2. Logar \n" +
-                            "3. Sair")
+                    println("\nEnter one of the options \n" +
+                            "1. Sign up \n" +
+                            "2. Log in \n" +
+                            "3. Exit")
                 }
             }
         }
