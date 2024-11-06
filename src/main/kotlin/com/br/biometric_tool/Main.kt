@@ -1,6 +1,7 @@
 package com.br.biometric_tool
 
 import com.br.biometric_tool.impl.SiftAndFlannImpl
+import com.br.biometric_tool.infra.database.connectToDatabase
 import org.opencv.core.Core
 
 import java.io.File
@@ -20,6 +21,8 @@ fun main(args: Array<String>) {
     } else {
         println("Authentication images not found")
     }
+
+    connectToDatabase()
 }
 
 fun isImageFile(file: File): Boolean {
