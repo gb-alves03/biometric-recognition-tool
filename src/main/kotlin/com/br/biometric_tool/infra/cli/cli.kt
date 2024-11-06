@@ -56,7 +56,7 @@ fun main() {
                     email = input["email"]!!,
                     password = input["password"]!!,
                     biometricsEnabled = input["biometricsEnabled"] == "yes",
-                    biometricsUrl = input["biometricsUrl"]!!
+                    biometricsUrl = mutableListOf()
                 )
 
                 println("Registration completed! Account details:")

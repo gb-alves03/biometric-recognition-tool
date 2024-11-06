@@ -10,12 +10,17 @@ fun main(args: Array<String>) {
 
     val siftAndFlann = SiftAndFlannImpl()
 
-    val refImagePath = "src/main/resources/SOCOFing/Altered/1__M_Left_index_finger_CR.BMP"
+    val refImagePath = "src/main/resources/SOCOFing/Real/1__M_Left_thumb_finger.BMP"
 
-    val authImagePath = "src/main/resources/SOCOFing/Real/2__F_Left_index_finger.BMP"
+    val authImagePathList = mutableListOf("src/main/resources/SOCOFing/Real/1__M_Left_index_finger.BMP",
+        "src/main/resources/SOCOFing/Real/1__M_Left_little_finger.BMP",
+        "src/main/resources/SOCOFing/Real/1__M_Left_middle_finger.BMP",
+        "src/main/resources/SOCOFing/Real/1__M_Left_ring_finger.BMP",
+        "src/main/resources/SOCOFing/Real/1__M_Left_thumb_finger.BMP"
+        )
 
-    if (authImagePath.isNotEmpty()) {
-        val result = siftAndFlann.authenticate(refImagePath, authImagePath)
+    if (authImagePathList.isNotEmpty()) {
+        val result = siftAndFlann.authenticate(refImagePath, authImagePathList)
         println(result);
     } else {
         println("Authentication images not found")
