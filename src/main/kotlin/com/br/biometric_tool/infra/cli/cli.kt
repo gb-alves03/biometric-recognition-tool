@@ -1,6 +1,8 @@
 package com.br.biometric_tool.infra.cli
 
 import com.br.biometric_tool.domain.entity.Account
+import com.br.biometric_tool.dto.SignupInput
+import com.br.biometric_tool.service.Signup
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -55,29 +57,12 @@ fun main() {
                                 fingerprintUrls[finger] = url
                             }
                         }
-
-                        val account = Account(
-                            firstName = input["firstName"]!!,
-                            lastName = input["lastName"]!!,
-                            email = input["email"]!!,
-                            password = input["password"]!!,
-                            biometricsEnabled = input["biometricsEnabled"] == "yes",
-                        )
-
-                        fingerprintUrls.forEach { (finger, url) ->
-                            account.addBiometric(finger, url)
-                        }
-
-                        accounts[account.getEmail()] = account
-                        println("Registration completed! Account details:")
-                        println("Account ID: ${account.accountId}")
-                        println("Name: ${account.getName()}")
-                        println("Email: ${account.getEmail()}")
-                        println("BiometricsEnabled: ${account.isBiometricsEnabled()}")
                         step = ""
                     }
                 }
             }
+            val response = Signup().execute(SignupInput(input["firstName"].toString(), input["lastName"].toString(), input["email"].toString(), input["password"].toString(), input["biometricsEnabled"].toString() == "yes", fingerprintUrls))
+            print(response.output)
 
         } else if (command == "2") {
             println("Enter your email:")
