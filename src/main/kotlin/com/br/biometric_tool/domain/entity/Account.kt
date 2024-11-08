@@ -17,18 +17,22 @@ class Account(
     private var email: Email
     private var password: Password
     private var biometricsEnabled: Boolean = false
-    private var biometricsUrls: MutableList<String>
+    private var biometricsUrls: MutableMap<String, String>
 
     init {
         this.name = Name(firstName, lastName)
         this.email = Email(email)
         this.password = Password.create(password)
         this.biometricsEnabled = biometricsEnabled
-        this.biometricsUrls = mutableListOf()
+        this.biometricsUrls = mutableMapOf()
     }
 
-    fun addBiometric(url: String) {
-        this.biometricsUrls.add(url)
+    fun getBiometrics(): MutableMap<String, String> {
+        return this.biometricsUrls;
+    }
+
+    fun addBiometric(key: String, url: String) {
+        this.biometricsUrls[key] = url
     }
 
     fun getName(): String {
