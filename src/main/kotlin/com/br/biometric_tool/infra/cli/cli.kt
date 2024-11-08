@@ -24,7 +24,7 @@ fun main() {
 
     val reader = BufferedReader(InputStreamReader(System.`in`))
     var step = ""
-    var currentAccount: Account? = null
+    var emailLogged: String? = null
 
     println("Enter one of the options \n1. Sign up \n2. Log in \n3. Toggle Biometrics \n4. Exit")
 
@@ -76,10 +76,10 @@ fun main() {
                 }
                 val response = signup.execute(
                     SignupInput(
-                        input["firstName"].orEmpty(),
-                        input["lastName"].orEmpty(),
-                        input["email"].orEmpty(),
-                        input["password"].orEmpty(),
+                        input["firstName"]!!,
+                        input["lastName"]!!,
+                        input["email"]!!,
+                        input["password"]!!,
                         input["biometricsEnabled"] == "yes",
                         fingerprintUrls
                     )
@@ -99,7 +99,8 @@ fun main() {
                         println("Enter the biometrics URL (attempt ${attempts + 1} of 3):")
                         val biometricsUrl = reader.readLine().trim()
                         val result = login.execute(LoginInput(email, null, biometricsUrl))
-                        if (result.output) {
+                        if (result.status) {
+                            emailLogged = result.email
                             println("Biometric login successful!")
                             loggedIn = true
                         } else {
@@ -115,7 +116,7 @@ fun main() {
                     println("Enter your password:")
                     val password = reader.readLine().trim()
                     val result = login.execute(LoginInput(email, password))
-                    if (result.output) {
+                    if (result.status) {
                         println("Password login successful!")
                     } else {
                         println("Incorrect password.")
@@ -123,8 +124,8 @@ fun main() {
                 }
             }
             "3" -> {
-                if (currentAccount != null) {
-                    val response = changeBiometricStatus.execute(ChangeBiometricStatusInput(currentAccount.getEmail()))
+                if (emailLogged != null) {
+                    val response = changeBiometricStatus.execute(ChangeBiometricStatusInput(emailLogged))
                     println(response.output)
                 } else {
                     println("No account is currently logged in.")

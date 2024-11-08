@@ -16,6 +16,6 @@ class Login(private val accountRepository: AccountRepository) {
                 result = account.passwordMatches(input.password)
             }
         }
-        return LoginOutput(result)
+        return LoginOutput(result, account.accountId)
     }
 }
