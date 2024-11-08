@@ -1,17 +1,27 @@
 package com.br.biometric_tool.infra.cli
 
-import com.br.biometric_tool.domain.entity.Account
-import com.br.biometric_tool.dto.SignupInput
-import com.br.biometric_tool.service.Signup
+import com.br.biometric_tool.core.domain.entity.Account
+import com.br.biometric_tool.core.dto.GetBiometricsEnabledInput
+import com.br.biometric_tool.core.dto.LoginInput
+import com.br.biometric_tool.core.dto.SignupInput
+import com.br.biometric_tool.infra.repository.AccountRepositoryMemory
+import com.br.biometric_tool.core.service.GetBiometricsEnabled
+import com.br.biometric_tool.core.service.Login
+import com.br.biometric_tool.core.service.Signup
+import org.opencv.core.Core
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-val accounts = mutableMapOf<String, Account>()
-
 fun main() {
+    System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+    val accountRepository = AccountRepositoryMemory()
+    val getBiometricsEnabled = GetBiometricsEnabled(accountRepository)
+    val login = Login(accountRepository)
+    val signup = Signup(accountRepository)
+
     val reader = BufferedReader(InputStreamReader(System.`in`))
     var step = ""
-    var currentAccount: Account? = null
+    val currentAccount: Account? = null
 
     println("Enter one of the options \n1. Sign up \n2. Log in \n3. Toggle Biometrics \n4. Exit")
 
@@ -61,31 +71,28 @@ fun main() {
                     }
                 }
             }
-            val response = Signup().execute(SignupInput(input["firstName"].toString(), input["lastName"].toString(), input["email"].toString(), input["password"].toString(), input["biometricsEnabled"].toString() == "yes", fingerprintUrls))
+            val response = signup.execute(SignupInput(input["firstName"].toString(), input["lastName"].toString(), input["email"].toString(), input["password"].toString(), input["biometricsEnabled"].toString() == "yes", fingerprintUrls))
             print(response.output)
 
         } else if (command == "2") {
             println("Enter your email:")
             val email = reader.readLine().trim()
 
-            //Verificação se existe no database
-            if (!accounts.containsKey(email)) {
-                println("Account not found.")
-                continue
-            }
-            currentAccount = accounts[email]
+            val isBiometricsEnabled = getBiometricsEnabled.execute(GetBiometricsEnabledInput(email))
 
-            if (currentAccount!!.isBiometricsEnabled()) {
+            if (isBiometricsEnabled.output) {
                 var attempts = 0
                 var loggedIn = false
                 while (attempts < 3 && !loggedIn) {
                     println("Enter the biometrics URL (attempt ${attempts + 1} of 3):")
                     val biometricsUrl = reader.readLine().trim()
-                    if (currentAccount.getBiometrics().containsValue(biometricsUrl)) {
+                    val result = login.execute(LoginInput(email, null, biometricsUrl))
+                    if (result.output) {
                         println("Biometric login successful!")
                         loggedIn = true
                     } else {
                         attempts++
+
                         if (attempts < 3) {
                             println("Biometric URL incorrect. Try again.")
                         } else {
@@ -96,7 +103,8 @@ fun main() {
             } else {
                 println("Enter your password:")
                 val password = reader.readLine().trim()
-                if (currentAccount.passwordMatches(password)) {
+                val result = login.execute(LoginInput(email, password))
+                if (result.output) {
                     println("Password login successful!")
                 } else {
                     println("Incorrect password.")

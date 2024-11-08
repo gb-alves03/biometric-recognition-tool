@@ -1,4 +1,4 @@
-package com.br.biometric_tool.domain.vo
+package com.br.biometric_tool.core.domain.vo
 
 class Email(email: String) {
     private var email: String

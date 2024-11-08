@@ -1,11 +1,11 @@
-package com.br.biometric_tool.service
+package com.br.biometric_tool.core.service
 
-import com.br.biometric_tool.domain.entity.Account
-import com.br.biometric_tool.dto.SignupInput
-import com.br.biometric_tool.dto.SignupOutput
-import com.br.biometric_tool.infra.cli.accounts
+import com.br.biometric_tool.core.domain.entity.Account
+import com.br.biometric_tool.core.dto.SignupInput
+import com.br.biometric_tool.core.dto.SignupOutput
+import com.br.biometric_tool.core.repository.AccountRepository
 
-class Signup(/* passa as dependecias */) {
+class Signup(private val accountRepository: AccountRepository) {
 
     fun execute(input: SignupInput): SignupOutput {
         val account = Account(
@@ -20,7 +20,7 @@ class Signup(/* passa as dependecias */) {
             account.addBiometric(finger, url)
         }
 
-        // Persistir no banco
+        accountRepository.save(account)
         println("Account ID: ${account.accountId}")
         println("Name: ${account.getName()}")
         println("Email: ${account.getEmail()}")

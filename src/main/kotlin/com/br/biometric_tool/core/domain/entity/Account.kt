@@ -1,8 +1,8 @@
-package com.br.biometric_tool.domain.entity
+package com.br.biometric_tool.core.domain.entity
 
-import com.br.biometric_tool.domain.vo.Email
-import com.br.biometric_tool.domain.vo.Name
-import com.br.biometric_tool.domain.vo.Password
+import com.br.biometric_tool.core.domain.vo.Email
+import com.br.biometric_tool.core.domain.vo.Name
+import com.br.biometric_tool.core.domain.vo.Password
 import java.util.UUID
 
 class Account(

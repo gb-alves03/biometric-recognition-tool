@@ -1,4 +1,4 @@
-package com.br.biometric_tool.domain.vo
+package com.br.biometric_tool.core.domain.vo
 
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException

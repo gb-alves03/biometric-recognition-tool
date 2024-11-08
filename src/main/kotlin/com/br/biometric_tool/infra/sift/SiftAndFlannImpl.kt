@@ -1,4 +1,4 @@
-package com.br.biometric_tool.impl
+package com.br.biometric_tool.infra.sift
 
 import com.br.biometric_tool.infra.exceptions.DescriptorsExtractionFailedException
 import com.br.biometric_tool.infra.exceptions.ImageNotLoadedException
@@ -15,7 +15,7 @@ class SiftAndFlannImpl {
 
     private val sift = SIFT.create()
 
-    fun loadImage(path: String): Mat {
+    private fun loadImage(path: String): Mat {
         val image = Imgcodecs.imread(path, Imgcodecs.IMREAD_GRAYSCALE)
         if (image.empty()) {
             throw ImageNotLoadedException("Error to load the image: $path")
@@ -23,7 +23,7 @@ class SiftAndFlannImpl {
         return image
     }
 
-    fun extractDescriptors(image: Mat): Pair<MatOfKeyPoint, Mat> {
+    private fun extractDescriptors(image: Mat): Pair<MatOfKeyPoint, Mat> {
         val keypoints = MatOfKeyPoint()
         val descriptors = Mat()
         sift.detectAndCompute(image, Mat(), keypoints, descriptors)
@@ -35,7 +35,7 @@ class SiftAndFlannImpl {
         return Pair(keypoints, descriptors)
     }
 
-    fun matchDescriptors(descriptorsRef: Mat, descriptorsAuth: Mat, threshold: Double = 0.7): List<DMatch> {
+    private fun matchDescriptors(descriptorsRef: Mat, descriptorsAuth: Mat, threshold: Double = 0.7): List<DMatch> {
         val flannMatcher = FlannBasedMatcher.create()
 
         val matches = MatOfDMatch()
@@ -45,21 +45,22 @@ class SiftAndFlannImpl {
             .filter { it.distance < threshold }
     }
 
-    //Compara a authImagePath com cada umas das imagens cadastradas anteriormente pelo usuario.
-    fun authenticate(refImagePath: String, authImagePath: MutableList<String>, matchThreshold: Int = 10): Boolean {
-        for(url in authImagePath) {
-            val refImage = loadImage((refImagePath))
+    fun authenticate(refImagePath: String, authImagePaths: Map<String, String>, matchThreshold: Int = 10): Boolean {
+        for ((_, path) in authImagePaths) {
+            val refImage = loadImage(refImagePath)
             val (_, descriptorsRef) = extractDescriptors(refImage)
 
             try {
-                val authImage = loadImage(url)
+                val authImage = loadImage(path)
                 val (_, descriptorsAuth) = extractDescriptors(authImage)
                 val goodMatches = matchDescriptors(descriptorsRef, descriptorsAuth)
-                //println("Image: $authImagePath - Good matches: ${goodMathces.size} - Authenticated: $isAuthenticated")
-                return if(goodMatches.size >= matchThreshold) true else continue
+
+                if (goodMatches.size >= matchThreshold) {
+                    return true
+                }
             } catch (e: ImageNotProcessedException) {
-                println("Error to process the image $authImagePath: ${e.message}")
-                return false
+                println("Error to process the image $path: ${e.message}")
+                continue
             }
         }
         return false

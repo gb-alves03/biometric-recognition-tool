@@ -1,3 +1,3 @@
-package com.br.biometric_tool.dto
+package com.br.biometric_tool.core.dto
 
 data class SignupOutput(val output: String)
