@@ -6,7 +6,7 @@ import com.br.biometric_tool.core.repository.AccountRepository
 
 class GetBiometricsEnabled(private val accountRepository: AccountRepository) {
     fun execute(input: GetBiometricsEnabledInput): GetBiometricsEnabledOutput {
-        val account = accountRepository.findByEmail(input.email) ?: throw Error()
+        val account = accountRepository.findByEmail(input.email) ?: throw IllegalArgumentException("Account not found for email: ${input.email}")
         return GetBiometricsEnabledOutput(account.isBiometricsEnabled())
     }
 }
