@@ -22,6 +22,8 @@ fun main() {
     val signup = Signup(accountRepository)
     val changeBiometricStatus = ChangeBiometricStatus(accountRepository)
 
+
+
     val reader = BufferedReader(InputStreamReader(System.`in`))
     var step = ""
     var emailLogged: String? = null
@@ -84,7 +86,7 @@ fun main() {
                         fingerprintUrls
                     )
                 )
-                println(response.output)
+                println(response.message)
             }
             "2" -> {
                 println("Enter your email:")
@@ -92,7 +94,7 @@ fun main() {
 
                 val isBiometricsEnabled = getBiometricsEnabled.execute(GetBiometricsEnabledInput(email))
 
-                if (isBiometricsEnabled.output) {
+                if (isBiometricsEnabled.status) {
                     var attempts = 0
                     var loggedIn = false
                     while (attempts < 3 && !loggedIn) {
@@ -117,6 +119,7 @@ fun main() {
                     val password = reader.readLine().trim()
                     val result = login.execute(LoginInput(email, password))
                     if (result.status) {
+                        emailLogged = result.email
                         println("Password login successful!")
                     } else {
                         println("Incorrect password.")
@@ -126,7 +129,7 @@ fun main() {
             "3" -> {
                 if (emailLogged != null) {
                     val response = changeBiometricStatus.execute(ChangeBiometricStatusInput(emailLogged))
-                    println(response.output)
+                    println(response.status)
                 } else {
                     println("No account is currently logged in.")
                 }

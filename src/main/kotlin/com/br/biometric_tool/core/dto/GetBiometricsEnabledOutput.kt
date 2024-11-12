@@ -1,3 +1,3 @@
 package com.br.biometric_tool.core.dto
 
-data class GetBiometricsEnabledOutput(val output: Boolean)
+data class GetBiometricsEnabledOutput(val status: Boolean)

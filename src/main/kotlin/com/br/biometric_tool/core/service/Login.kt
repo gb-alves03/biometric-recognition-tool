@@ -4,10 +4,11 @@ import com.br.biometric_tool.core.dto.LoginInput
 import com.br.biometric_tool.core.dto.LoginOutput
 import com.br.biometric_tool.infra.sift.SiftAndFlannImpl
 import com.br.biometric_tool.core.repository.AccountRepository
+import com.br.biometric_tool.infra.exceptions.NotFoundException
 
 class Login(private val accountRepository: AccountRepository) {
     fun execute(input: LoginInput): LoginOutput {
-        val account = accountRepository.findByEmail(input.email) ?: throw IllegalArgumentException("Account not found for email: ${input.email}")
+        val account = accountRepository.findByEmail(input.email) ?: throw NotFoundException("Account not found for email: ${input.email}")
         var result = false
         if(input.biometricsUrl != null) {
             result = SiftAndFlannImpl().authenticate(input.biometricsUrl, account.getBiometrics())
