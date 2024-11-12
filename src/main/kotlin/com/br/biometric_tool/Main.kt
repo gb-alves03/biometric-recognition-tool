@@ -1,7 +1,7 @@
 package com.br.biometric_tool
 
+import com.br.biometric_tool.infra.database.DatabaseManager
 import com.br.biometric_tool.infra.sift.SiftAndFlannImpl
-import com.br.biometric_tool.infra.database.connectToDatabase
 import org.opencv.core.Core
 
 import java.io.File
@@ -10,6 +10,8 @@ fun main(args: Array<String>) {
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
 
     val siftAndFlann = SiftAndFlannImpl()
+    val databaseManager = DatabaseManager()
+    val connection = databaseManager.getConnection()
 
     val refImagePath = "src/main/resources/SOCOFing/Real/1__M_Left_thumb_finger.BMP"
 
@@ -27,7 +29,6 @@ fun main(args: Array<String>) {
         println("Authentication images not found")
     }
 
-    connectToDatabase()
 }
 
 fun isImageFile(file: File): Boolean {
