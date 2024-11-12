@@ -1,5 +1,7 @@
 package com.br.biometric_tool.core.domain.vo
 
+import com.br.biometric_tool.infra.exceptions.InvalidStatus
+import com.br.biometric_tool.infra.exceptions.NotFoundException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -16,13 +18,13 @@ class Password private constructor(private val password: String) {
                 }
                 hexString.toString()
             } catch (e: NoSuchAlgorithmException) {
-                throw RuntimeException("SHA-256 algorithm not found", e)
+                throw NotFoundException("SHA-256 algorithm not found")
             }
         }
 
         fun create(password: String): Password {
             if (!password.matches(Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,12}$"))) {
-                throw IllegalArgumentException("Invalid password")
+                throw InvalidStatus("Invalid password")
             }
             val encryptedPassword = hashPassword(password)
             return Password(encryptedPassword)
