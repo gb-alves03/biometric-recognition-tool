@@ -1,7 +1,6 @@
 package com.br.biometric_tool.infra.exceptions
 
-class InvalidStatus : RuntimeException {
-    private val status: Int = 400
+class TogglingBiometricsException : RuntimeException {
 
     constructor(message: String) : super(message)
 }
