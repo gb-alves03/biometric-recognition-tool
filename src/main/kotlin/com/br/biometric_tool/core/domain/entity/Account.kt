@@ -6,26 +6,29 @@ import com.br.biometric_tool.core.domain.vo.Password
 import java.util.UUID
 
 class Account(
-    firstName: String,
-    lastName: String,
-    email: String,
-    password: String,
-    biometricsEnabled: Boolean
-) {
-    val accountId: String = UUID.randomUUID().toString()
-    private var name: Name
-    private var email: Email
-    private var password: Password
-    private var biometricsEnabled: Boolean = false
+    val accountId: String,
+    private var name: Name,
+    private var email: Email,
+    private var password: Password,
+    private var biometricsEnabled: Boolean,
     private var biometricsUrls: MutableMap<String, String>
+) {
+    constructor(firstName: String, lastName: String, email: String, password: String, biometricsEnabled: Boolean = false) : this(
+        UUID.randomUUID().toString(),
+        Name(firstName, lastName),
+        Email(email),
+        Password.create(password),
+        biometricsEnabled,
+        mutableMapOf())
 
-    init {
-        this.name = Name(firstName, lastName)
-        this.email = Email(email)
-        this.password = Password.create(password)
-        this.biometricsEnabled = biometricsEnabled
-        this.biometricsUrls = mutableMapOf()
-    }
+    constructor(accountId: String, firstName: String, lastName: String, email: String, password: String, biometricsEnabled: Boolean) : this(
+        accountId,
+        Name(firstName, lastName),
+        Email(email),
+        Password.restore(password),
+        biometricsEnabled,
+        mutableMapOf()
+    )
 
     fun getBiometrics(): MutableMap<String, String> {
         return this.biometricsUrls;
