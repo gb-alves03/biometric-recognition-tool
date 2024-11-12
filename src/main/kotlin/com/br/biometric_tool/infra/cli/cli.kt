@@ -22,6 +22,8 @@ fun main() {
     val signup = Signup(accountRepository)
     val changeBiometricStatus = ChangeBiometricStatus(accountRepository)
 
+
+
     val reader = BufferedReader(InputStreamReader(System.`in`))
     var step = ""
     var emailLogged: String? = null
@@ -117,6 +119,7 @@ fun main() {
                     val password = reader.readLine().trim()
                     val result = login.execute(LoginInput(email, password))
                     if (result.status) {
+                        emailLogged = result.email
                         println("Password login successful!")
                     } else {
                         println("Incorrect password.")
