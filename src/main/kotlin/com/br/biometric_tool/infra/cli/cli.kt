@@ -5,7 +5,6 @@ import com.br.biometric_tool.core.dto.GetBiometricsEnabledInput
 import com.br.biometric_tool.core.dto.LoginInput
 import com.br.biometric_tool.core.dto.SignupInput
 import com.br.biometric_tool.core.service.ChangeBiometricStatus
-import com.br.biometric_tool.infra.repository.AccountRepositoryMemory
 import com.br.biometric_tool.core.service.GetBiometricsEnabled
 import com.br.biometric_tool.core.service.Login
 import com.br.biometric_tool.core.service.Signup
@@ -19,12 +18,4 @@ import java.io.InputStreamReader
 
 fun main() {
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
-    val accountRepository = AccountRepositoryMemory()
-    val getBiometricsEnabled = GetBiometricsEnabled(accountRepository)
-    val login = Login(accountRepository)
-    val signup = Signup(accountRepository)
-    val changeBiometricStatus = ChangeBiometricStatus(accountRepository)
-
-
-
 }

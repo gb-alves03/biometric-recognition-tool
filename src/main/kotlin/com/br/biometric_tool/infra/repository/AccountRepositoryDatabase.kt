@@ -46,6 +46,59 @@ class AccountRepositoryDatabase(private val connection: Connection) : AccountRep
         }
     }
 
+    override fun put(account: Account) {
+        var accountStatement: PreparedStatement? = null
+        var urlStatement: PreparedStatement? = null
+        var insertUrlStatement: PreparedStatement? = null
+        var urlResultSet: ResultSet? = null
+        try {
+            accountStatement = connection.prepareStatement(
+                "UPDATE accounts SET biometric_enabled = ? WHERE account_id = ?"
+            )
+            accountStatement.setBoolean(1, account.isBiometricsEnabled())
+            accountStatement.setString(2, account.accountId)
+
+            val rowsUpdated = accountStatement.executeUpdate()
+            if (rowsUpdated > 0) {
+                println("Dados de conta atualizados com sucesso!")
+            }
+
+            urlStatement = connection.prepareStatement(
+                "SELECT url FROM biometric_urls WHERE account_id = ?"
+            )
+            urlStatement.setString(1, account.accountId)
+            urlResultSet = urlStatement.executeQuery()
+
+            val registeredUrls = mutableSetOf<String>()
+            while (urlResultSet.next()) {
+                registeredUrls.add(urlResultSet.getString("url"))
+            }
+
+            insertUrlStatement = connection.prepareStatement(
+                "INSERT INTO biometric_urls (account_id, url) VALUES (?, ?)"
+            )
+
+            account.getBiometrics().forEach { (_, url) ->
+                if (!registeredUrls.contains(url)) {
+                    insertUrlStatement.setString(1, account.accountId)
+                    insertUrlStatement.setString(2, url)
+                    insertUrlStatement.addBatch()
+                }
+            }
+
+            insertUrlStatement.executeBatch()
+            println("Novas URLs de biometria inseridas com sucesso!")
+
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        } finally {
+            urlResultSet?.close()
+            accountStatement?.close()
+            urlStatement?.close()
+            insertUrlStatement?.close()
+        }
+    }
+
     override fun findByEmail(email: String): Account? {
         val fingerNames = listOf("thumb", "index", "middle", "ring", "little")
         var accountStatement: PreparedStatement? = null
@@ -75,13 +128,13 @@ class AccountRepositoryDatabase(private val connection: Connection) : AccountRep
                 urlStatement.setString(1, accountId)
                 urlResultSet = urlStatement.executeQuery()
 
-                var index = 0
-                while (urlResultSet.next() && index < fingerNames.size) {
-                    val url = urlResultSet.getString("url")
-                    val finger = fingerNames[index]
-                    account.addBiometric(finger, url)
-                    index++
-                }
+                        var index = 0
+                        while (urlResultSet.next() && index < fingerNames.size) {
+                            val url = urlResultSet.getString("url")
+                            val finger = fingerNames[index]
+                            account.addBiometric(finger, url)
+                            index++
+                        }
 
                 return account
             }
