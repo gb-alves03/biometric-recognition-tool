@@ -6,7 +6,6 @@ import com.br.biometric_tool.infra.exceptions.SchemaFileNotFoundException
 import java.io.File
 import java.io.FileInputStream
 import java.sql.Connection
-import java.sql.Driver
 import java.sql.DriverManager
 import java.sql.Statement
 import java.util.*

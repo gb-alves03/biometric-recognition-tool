@@ -23,10 +23,10 @@ class ChangeBiometricStatus(private val accountRepository: AccountRepository) {
                 }
             }
             account.biometricsEnabled()
-            return ChangeBiometricStatusOutput("Biometrics status updated: ${account.isBiometricsEnabled()}")
         } else {
             account.biometricsDisabled()
-            return ChangeBiometricStatusOutput("Biometrics status updated: ${account.isBiometricsEnabled()}")
         }
+        accountRepository.put(account)
+        return ChangeBiometricStatusOutput("Biometrics status updated: ${account.isBiometricsEnabled()}")
     }
 }

@@ -38,6 +38,14 @@ class Account(
         this.biometricsUrls[key] = url
     }
 
+    fun getFirstName(): String {
+        return this.name.getFirstName()
+    }
+
+    fun getLastName(): String {
+        return this.name.getLastName()
+    }
+
     fun getName(): String {
         return this.name.getName()
     }
